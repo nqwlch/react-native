@@ -3,23 +3,23 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-require "json"
 
-package = JSON.parse(File.read(File.join(__dir__, "package.json")))
-version = package['version']
 
-source = { :git => 'https://github.com/facebook/react-native.git' }
-if version == '1000.0.0'
-  # This is an unpublished version, use the latest commit hash of the react-native repo, which we’re presumably in.
-  source[:commit] = `git rev-parse HEAD`.strip if system("git rev-parse --git-dir > /dev/null 2>&1")
-else
-  source[:tag] = "v#{version}"
-end
+version = "0.78.3"
+source = { :git => 'https://github.com/nqwlch/react-native.git' }
+source[:tag] = "v#{version}"
+folly_compiler_flags = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -DFOLLY_HAVE_CLOCK_GETTIME=1 -Wno-comma -Wno-shorten-64-to-32"
+folly_release_version = "2024.11.18.0"
+
+socket_rocket_version = '0.7.1'
+
+boost_compiler_flags = "-Wno-documentation" 
+
 
 Pod::Spec.new do |s|
   s.name                   = "React"
   s.version                = version
-  s.summary                = package["description"]
+  s.summary                = "."
   s.description            = <<-DESC
                                React Native apps are built using the React JS
                                framework, and render directly to native UIKit
@@ -34,9 +34,9 @@ Pod::Spec.new do |s|
                                quality or capability.
                              DESC
   s.homepage               = "https://reactnative.dev/"
-  s.license                = package["license"]
+  s.license                = "MIT"
   s.author                 = "Meta Platforms, Inc. and its affiliates"
-  s.platforms              = min_supported_versions
+  s.platforms              = "15.1"
   s.source                 = source
   s.preserve_paths         = "package.json", "LICENSE", "LICENSE-docs"
   s.cocoapods_version      = ">= 1.10.1"
@@ -53,4 +53,6 @@ Pod::Spec.new do |s|
   s.dependency "React-RCTSettings", version
   s.dependency "React-RCTText", version
   s.dependency "React-RCTVibration", version
+  
+  
 end
